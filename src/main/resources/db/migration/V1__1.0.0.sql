@@ -14,7 +14,7 @@ CREATE TABLE financial_transaction
     name        VARCHAR        NOT NULL,
     detail      VARCHAR,
     amount      DECIMAL(10, 2) NOT NULL,
-    created_at  DATE           NOT NULL,
+    created_at  DATE DEFAULT NOW(),
     category_id INTEGER        NOT NULL,
     CONSTRAINT transaction_pk PRIMARY KEY (id),
     CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES category (id)
