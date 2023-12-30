@@ -2,10 +2,8 @@ package com.github.davitavora.jooq.controller;
 
 import com.github.davitavora.jooq.mapper.TransactionMapper;
 import com.github.davitavora.jooq.model.command.CreateTransactionCommand;
-import com.github.davitavora.jooq.model.projection.TransactionProjection;
 import com.github.davitavora.jooq.model.representation.TransactionRepresentation;
 import com.github.davitavora.jooq.service.TransactionService;
-import io.vobiscum.jooqpoc.domain.tables.records.FinancialTransactionRecord;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,19 +30,19 @@ public class TransactionController {
     public List<TransactionRepresentation> search(@RequestParam(required = false) String name,
                                                   @RequestParam(required = false) Integer categoryId,
                                                   @RequestParam(required = false) LocalDate createdAt) {
-        final List<TransactionProjection> projections = service.search(name, categoryId, createdAt);
+        final var projections = service.search(name, categoryId, createdAt);
         return mapper.toRepresentation(projections);
     }
 
     @PostMapping
     public void save(@RequestBody CreateTransactionCommand command) {
-        FinancialTransactionRecord record = mapper.toRecord(command);
+        final var record = mapper.toRecord(command);
         service.save(record);
     }
 
     @GetMapping("{id}")
     public TransactionRepresentation findBy(@PathVariable Long id) {
-        TransactionProjection projection = service.findBy(id);
+        final var projection = service.findBy(id);
         return mapper.toRepresentation(projection);
     }
 

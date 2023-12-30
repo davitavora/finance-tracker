@@ -1,9 +1,10 @@
 package com.github.davitavora.jooq.repository;
 
-import static com.github.davitavora.jooq.util.JooqOperation.optionalCondition;
+import static com.github.davitavora.jooq.util.JooqOperation.conditionIf;
 import static org.jooq.impl.DSL.asterisk;
 
 import com.github.davitavora.jooq.model.projection.CategoryProjection;
+import io.micrometer.common.util.StringUtils;
 import io.vobiscum.jooqpoc.domain.Tables;
 import io.vobiscum.jooqpoc.domain.enums.CategoryType;
 import io.vobiscum.jooqpoc.domain.tables.records.CategoryRecord;
@@ -12,7 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +26,8 @@ public class CategoryRepository {
         return jooq.select(asterisk())
             .from(Tables.CATEGORY)
             .where(
-                optionalCondition(name, StringUtils::isBlank, Tables.CATEGORY.NAME.likeIgnoreCase("%" + name + "%")),
-                optionalCondition(type, Objects::isNull, Tables.CATEGORY.TYPE.eq(type))
+                conditionIf(Tables.CATEGORY.NAME.likeIgnoreCase("%" + name + "%"), name, StringUtils::isNotBlank),
+                conditionIf(Tables.CATEGORY.TYPE.eq(type), type, Objects::nonNull)
             )
             .fetchInto(CategoryProjection.class);
     }

@@ -15,7 +15,8 @@ CREATE TABLE financial_transaction
     detail      VARCHAR,
     amount      DECIMAL(10, 2) NOT NULL,
     created_at  DATE DEFAULT NOW(),
-    category_id INTEGER        NOT NULL,
+    category_id INTEGER,
     CONSTRAINT transaction_pk PRIMARY KEY (id),
     CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES category (id)
+        ON DELETE SET NULL
 );

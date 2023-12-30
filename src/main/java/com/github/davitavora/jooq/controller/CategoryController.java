@@ -2,7 +2,6 @@ package com.github.davitavora.jooq.controller;
 
 import com.github.davitavora.jooq.mapper.CategoryMapper;
 import com.github.davitavora.jooq.model.command.CreateCategoryCommand;
-import com.github.davitavora.jooq.model.projection.CategoryProjection;
 import com.github.davitavora.jooq.model.representation.CategoryRepresentation;
 import com.github.davitavora.jooq.service.CategoryService;
 import io.vobiscum.jooqpoc.domain.enums.CategoryType;
@@ -30,7 +29,7 @@ public class CategoryController {
     @GetMapping
     public List<CategoryRepresentation> search(@RequestParam(required = false) String name,
                                                @RequestParam(required = false) CategoryType type) {
-        final List<CategoryProjection> projections = service.search(name, type);
+        final var projections = service.search(name, type);
         return mapper.toRepresentation(projections);
     }
 
@@ -42,7 +41,7 @@ public class CategoryController {
 
     @GetMapping("{id}")
     public CategoryRepresentation findBy(@PathVariable Integer id) {
-        final CategoryProjection projection = service.findBy(id);
+        final var projection = service.findBy(id);
         return mapper.toRepresentation(projection);
     }
 
