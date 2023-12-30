@@ -12,6 +12,8 @@ public interface CategoryMapper {
 
     List<CategoryRepresentation> toRepresentation(List<CategoryProjection> projections);
 
+    CategoryRepresentation toRepresentation(CategoryProjection projection);
+
     CategoryRecord toRecord(CreateCategoryCommand command);
 
 }

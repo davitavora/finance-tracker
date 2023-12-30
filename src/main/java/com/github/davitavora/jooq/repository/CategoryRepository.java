@@ -9,6 +9,7 @@ import io.vobiscum.jooqpoc.domain.enums.CategoryType;
 import io.vobiscum.jooqpoc.domain.tables.records.CategoryRecord;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
@@ -34,6 +35,18 @@ public class CategoryRepository {
     @Transactional
     public void save(CategoryRecord record) {
         jooq.executeInsert(record);
+    }
+
+    public Optional<CategoryProjection> findBy(Integer id) {
+        return jooq.select(asterisk())
+            .from(Tables.CATEGORY)
+            .where(
+                Tables.CATEGORY.ID.eq(id)
+            ).fetchOptionalInto(CategoryProjection.class);
+    }
+
+    public void delete(Integer id) {
+        jooq.delete(Tables.CATEGORY).where(Tables.CATEGORY.ID.eq(id)).execute();
     }
 
 }
