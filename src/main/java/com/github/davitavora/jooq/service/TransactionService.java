@@ -1,5 +1,6 @@
 package com.github.davitavora.jooq.service;
 
+import com.github.davitavora.jooq.exception.TransactionNotFoundException;
 import com.github.davitavora.jooq.model.projection.TransactionProjection;
 import com.github.davitavora.jooq.repository.TransactionRepository;
 import io.vobiscum.jooqpoc.domain.tables.records.FinancialTransactionRecord;
@@ -22,6 +23,14 @@ public class TransactionService {
 
     public void save(FinancialTransactionRecord record) {
         repository.save(record);
+    }
+
+    public TransactionProjection findBy(Long id) {
+        return repository.findBy(id).orElseThrow(() -> new TransactionNotFoundException(id));
+    }
+
+    public void delete(Long id) {
+        repository.delete(id);
     }
 
 }

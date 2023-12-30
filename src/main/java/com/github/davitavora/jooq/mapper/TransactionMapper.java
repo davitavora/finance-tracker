@@ -12,5 +12,8 @@ public interface TransactionMapper {
 
     List<TransactionRepresentation> toRepresentation(List<TransactionProjection> projections);
 
+    TransactionRepresentation toRepresentation(TransactionProjection projection);
+
     FinancialTransactionRecord toRecord(CreateTransactionCommand command);
+
 }

@@ -8,6 +8,7 @@ import io.vobiscum.jooqpoc.domain.tables.records.FinancialTransactionRecord;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
@@ -40,6 +41,21 @@ public class TransactionRepository {
     @Transactional
     public void save(FinancialTransactionRecord record) {
         jooq.executeInsert(record);
+    }
+
+    public Optional<TransactionProjection> findBy(Long id) {
+        return jooq.select(Tables.FINANCIAL_TRANSACTION.asterisk()
+                .except(Tables.FINANCIAL_TRANSACTION.CATEGORY_ID),
+            Tables.FINANCIAL_TRANSACTION.category())
+            .from(Tables.FINANCIAL_TRANSACTION.join(Tables.CATEGORY)
+                .on(Tables.CATEGORY.ID.eq(Tables.FINANCIAL_TRANSACTION.CATEGORY_ID)))
+            .where(
+                Tables.FINANCIAL_TRANSACTION.ID.eq(id)
+            ).fetchOptionalInto(TransactionProjection.class);
+    }
+
+    public void delete(Long id) {
+        jooq.delete(Tables.FINANCIAL_TRANSACTION).where(Tables.FINANCIAL_TRANSACTION.ID.eq(id)).execute();
     }
 
 }
