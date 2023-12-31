@@ -1,7 +1,6 @@
 package com.github.davitavora.jooq.service;
 
 import com.github.davitavora.jooq.exception.CategoryNotFoundException;
-import com.github.davitavora.jooq.model.projection.CategoryProjection;
 import com.github.davitavora.jooq.repository.CategoryRepository;
 import io.vobiscum.jooqpoc.domain.enums.CategoryType;
 import io.vobiscum.jooqpoc.domain.tables.records.CategoryRecord;
@@ -16,7 +15,7 @@ public class CategoryService {
 
     private final CategoryRepository repository;
 
-    public List<CategoryProjection> search(String name, CategoryType type) {
+    public List<CategoryRecord> search(String name, CategoryType type) {
         return repository.search(name, type);
     }
 
@@ -25,7 +24,12 @@ public class CategoryService {
         repository.save(record);
     }
 
-    public CategoryProjection findBy(Integer id) {
+    @Transactional
+    public void update(CategoryRecord record) {
+        repository.update(record);
+    }
+
+    public CategoryRecord findBy(Integer id) {
         return repository.findBy(id).orElseThrow(() -> new CategoryNotFoundException(id));
     }
 

@@ -1,19 +1,22 @@
 package com.github.davitavora.jooq.mapper;
 
-import com.github.davitavora.jooq.model.command.CreateCategoryCommand;
-import com.github.davitavora.jooq.model.projection.CategoryProjection;
 import com.github.davitavora.jooq.model.representation.CategoryRepresentation;
 import io.vobiscum.jooqpoc.domain.tables.records.CategoryRecord;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper
 public interface CategoryMapper {
 
-    List<CategoryRepresentation> toRepresentation(List<CategoryProjection> projections);
+    CategoryRepresentation asRepresentation(CategoryRecord projection);
 
-    CategoryRepresentation toRepresentation(CategoryProjection projection);
+    List<CategoryRepresentation> asRepresentation(List<CategoryRecord> projections);
 
-    CategoryRecord toRecord(CreateCategoryCommand command);
+    @Mapping(target = "id", ignore = true)
+    CategoryRecord asNewRecord(CategoryRepresentation category);
+
+    void update(@MappingTarget CategoryRecord record, CategoryRepresentation representation);
 
 }
