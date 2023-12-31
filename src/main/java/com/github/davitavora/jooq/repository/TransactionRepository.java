@@ -1,10 +1,7 @@
 package com.github.davitavora.jooq.repository;
 
 import static com.github.davitavora.jooq.util.JooqOperation.conditionIf;
-import static com.github.davitavora.jooq.util.JooqOperation.nullableMapper;
 
-import com.github.davitavora.jooq.model.projection.CategoryProjection;
-import com.github.davitavora.jooq.model.projection.TransactionProjection;
 import io.micrometer.common.util.StringUtils;
 import io.vobiscum.jooqpoc.domain.Tables;
 import io.vobiscum.jooqpoc.domain.tables.records.FinancialTransactionRecord;
@@ -15,7 +12,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,7 +19,7 @@ public class TransactionRepository {
 
     private final DSLContext jooq;
 
-    public List<TransactionProjection> search(String name,
+    public List<FinancialTransactionRecord> search(String name,
                                               Integer categoryId,
                                               LocalDate createdAt) {
         return jooq
@@ -34,25 +30,23 @@ public class TransactionRepository {
                 conditionIf(Tables.FINANCIAL_TRANSACTION.CATEGORY_ID.eq(categoryId), categoryId, Objects::nonNull),
                 conditionIf(Tables.FINANCIAL_TRANSACTION.CREATED_AT.eq(createdAt), createdAt, Objects::nonNull)
             )
-            .fetchInto(TransactionProjection.class);
+            .fetchInto(FinancialTransactionRecord.class);
     }
 
-    public Optional<TransactionProjection> findBy(Long id) {
-        return jooq.select(
-                Tables.FINANCIAL_TRANSACTION.asterisk().except(Tables.FINANCIAL_TRANSACTION.CATEGORY_ID),
-                Tables.FINANCIAL_TRANSACTION.category()
-                    .mapping(nullableMapper(CategoryProjection::new))
-            )
+    public Optional<FinancialTransactionRecord> findBy(Long id) {
+        return jooq
+            .select(Tables.FINANCIAL_TRANSACTION.asterisk())
             .from(Tables.FINANCIAL_TRANSACTION)
-            .leftJoin(Tables.CATEGORY).on(Tables.CATEGORY.ID.eq(Tables.FINANCIAL_TRANSACTION.CATEGORY_ID))
-            .where(
-                Tables.FINANCIAL_TRANSACTION.ID.eq(id)
-            ).fetchOptionalInto(TransactionProjection.class);
+            .where(Tables.FINANCIAL_TRANSACTION.ID.eq(id))
+            .fetchOptionalInto(FinancialTransactionRecord.class);
     }
 
-    @Transactional
     public void save(FinancialTransactionRecord record) {
         jooq.executeInsert(record);
+    }
+
+    public void update(FinancialTransactionRecord record) {
+        jooq.executeUpdate(record);
     }
 
     public void delete(Long id) {

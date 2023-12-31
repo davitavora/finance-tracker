@@ -1,19 +1,22 @@
 package com.github.davitavora.jooq.mapper;
 
-import com.github.davitavora.jooq.model.command.CreateTransactionCommand;
-import com.github.davitavora.jooq.model.projection.TransactionProjection;
 import com.github.davitavora.jooq.model.representation.TransactionRepresentation;
 import io.vobiscum.jooqpoc.domain.tables.records.FinancialTransactionRecord;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper
 public interface TransactionMapper {
 
-    List<TransactionRepresentation> toRepresentation(List<TransactionProjection> projections);
+    TransactionRepresentation asRepresentation(FinancialTransactionRecord projection);
 
-    TransactionRepresentation toRepresentation(TransactionProjection projection);
+    List<TransactionRepresentation> asRepresentation(List<FinancialTransactionRecord> projections);
 
-    FinancialTransactionRecord toRecord(CreateTransactionCommand command);
+    @Mapping(target = "id", ignore = true)
+    FinancialTransactionRecord asNewRecord(TransactionRepresentation transaction);
+
+    void update(@MappingTarget FinancialTransactionRecord record, TransactionRepresentation representation);
 
 }
