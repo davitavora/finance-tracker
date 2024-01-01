@@ -46,7 +46,7 @@ public class TransactionRepository {
     }
 
     public void update(FinancialTransactionRecord record) {
-        jooq.executeUpdate(record);
+        record.update();
     }
 
     public void delete(Long id) {

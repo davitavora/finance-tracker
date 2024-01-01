@@ -41,9 +41,10 @@ public class TransactionController {
     }
 
     @PostMapping
-    public void save(@RequestBody @JsonView(Save.class) TransactionRepresentation transaction) {
+    public TransactionRepresentation save(@RequestBody @JsonView(Save.class) TransactionRepresentation transaction) {
         final var record = mapper.asNewRecord(transaction);
         service.save(record);
+        return mapper.asRepresentation(record);
     }
 
     @GetMapping("{id}")
