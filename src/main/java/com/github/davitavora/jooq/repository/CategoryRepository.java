@@ -31,11 +31,11 @@ public class CategoryRepository {
     }
 
     public void save(CategoryRecord record) {
-        jooq.executeInsert(record);
+        record.store();
     }
 
     public void update(CategoryRecord record) {
-        jooq.executeUpdate(record);
+        record.update();
     }
 
     public Optional<CategoryRecord> findBy(Integer id) {

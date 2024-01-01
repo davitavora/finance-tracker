@@ -40,9 +40,10 @@ public class CategoryController {
     }
 
     @PostMapping
-    public void save(@RequestBody @JsonView(Save.class) CategoryRepresentation category) {
+    public CategoryRepresentation save(@RequestBody @JsonView(Save.class) CategoryRepresentation category) {
         final var record = mapper.asNewRecord(category);
         service.save(record);
+        return mapper.asRepresentation(record);
     }
 
     @GetMapping("{id}")
