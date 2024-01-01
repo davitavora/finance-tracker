@@ -8,10 +8,12 @@ import com.github.davitavora.jooq.service.TransactionService;
 import com.github.davitavora.patch.web.PatchMediaType;
 import com.github.davitavora.patch.web.Patcher;
 import jakarta.json.JsonMergePatch;
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Validated
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
@@ -41,7 +44,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public TransactionRepresentation save(@RequestBody @JsonView(Save.class) TransactionRepresentation transaction) {
+    public TransactionRepresentation save(@RequestBody @JsonView(Save.class) @Valid TransactionRepresentation transaction) {
         final var record = mapper.asNewRecord(transaction);
         service.save(record);
         return mapper.asRepresentation(record);
@@ -54,11 +57,14 @@ public class TransactionController {
     }
 
     @PatchMapping(value = "{id}", consumes = PatchMediaType.APPLICATION_MERGE_PATCH_VALUE)
-    public TransactionRepresentation patch(@PathVariable Long id, @RequestBody JsonMergePatch patch) {
+    public TransactionRepresentation patch(
+        @PathVariable Long id,
+        @RequestBody JsonMergePatch patch
+    ) {
         final var record = service.findBy(id);
         final var existingTransaction = mapper.asRepresentation(record);
         final var patchedTransaction = patcher.mergePatch(patch, existingTransaction, TransactionRepresentation.class);
-        mapper.update(record, patchedTransaction);
+        mapper.updateChangedFields(record, patchedTransaction);
         service.update(record);
         return mapper.asRepresentation(record);
     }

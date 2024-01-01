@@ -2,7 +2,7 @@ package com.github.davitavora.jooq.service;
 
 import com.github.davitavora.jooq.exception.TransactionNotFoundException;
 import com.github.davitavora.jooq.repository.TransactionRepository;
-import io.vobiscum.jooqpoc.domain.tables.records.FinancialTransactionRecord;
+import com.github.jooq.domain.tables.records.FinancialTransactionRecord;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ public class TransactionService {
     private final TransactionRepository repository;
 
     public List<FinancialTransactionRecord> search(String name,
-                                              Integer categoryId,
-                                              LocalDate createdAt) {
+                                                   Integer categoryId,
+                                                   LocalDate createdAt) {
         return repository.search(name, categoryId, createdAt);
     }
 

@@ -1,8 +1,8 @@
 package com.github.davitavora.jooq.mapper;
 
 import com.github.davitavora.jooq.model.representation.TransactionRepresentation;
-import io.vobiscum.jooqpoc.domain.Tables;
-import io.vobiscum.jooqpoc.domain.tables.records.FinancialTransactionRecord;
+import com.github.jooq.domain.Tables;
+import com.github.jooq.domain.tables.records.FinancialTransactionRecord;
 import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;
@@ -28,7 +28,7 @@ public abstract class TransactionMapper {
     @Mapping(source = "detail", target = "detail", conditionExpression = "java(ObjectUtils.notEqual(record.getDetail(), representation.detail()))")
     @Mapping(source = "amount", target = "amount", conditionExpression = "java(ObjectUtils.notEqual(record.getAmount(), representation.amount()))")
     @Mapping(source = "categoryId", target = "categoryId", conditionExpression = "java(ObjectUtils.notEqual(record.getCategoryId(), representation.categoryId()))")
-    public abstract void update(@MappingTarget FinancialTransactionRecord record, TransactionRepresentation representation);
+    public abstract void updateChangedFields(@MappingTarget FinancialTransactionRecord record, TransactionRepresentation representation);
 
     @Mapping(target = "id", ignore = true)
     public FinancialTransactionRecord asNewRecord(TransactionRepresentation transaction) {

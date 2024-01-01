@@ -1,8 +1,8 @@
 package com.github.davitavora.jooq.mapper;
 
 import com.github.davitavora.jooq.model.representation.CategoryRepresentation;
-import io.vobiscum.jooqpoc.domain.Tables;
-import io.vobiscum.jooqpoc.domain.tables.records.CategoryRecord;
+import com.github.jooq.domain.Tables;
+import com.github.jooq.domain.tables.records.CategoryRecord;
 import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;
@@ -26,7 +26,7 @@ public abstract class CategoryMapper {
     @BeanMapping(ignoreByDefault = true, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "name", target = "name", conditionExpression = "java(ObjectUtils.notEqual(record.getName(), representation.name()))")
     @Mapping(source = "type", target = "type", conditionExpression = "java(ObjectUtils.notEqual(record.getType(), representation.type()))")
-    public abstract void update(@MappingTarget CategoryRecord record, CategoryRepresentation representation);
+    public abstract void updateChangedFields(@MappingTarget CategoryRecord record, CategoryRepresentation representation);
 
     @Mapping(target = "id", ignore = true)
     public CategoryRecord asNewRecord(CategoryRepresentation category) {

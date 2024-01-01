@@ -3,10 +3,10 @@ package com.github.davitavora.jooq.repository;
 import static com.github.davitavora.jooq.util.JooqOperation.conditionIf;
 import static org.jooq.impl.DSL.asterisk;
 
+import com.github.jooq.domain.Tables;
+import com.github.jooq.domain.enums.CategoryType;
+import com.github.jooq.domain.tables.records.CategoryRecord;
 import io.micrometer.common.util.StringUtils;
-import io.vobiscum.jooqpoc.domain.Tables;
-import io.vobiscum.jooqpoc.domain.enums.CategoryType;
-import io.vobiscum.jooqpoc.domain.tables.records.CategoryRecord;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

@@ -2,8 +2,8 @@ package com.github.davitavora.jooq.service;
 
 import com.github.davitavora.jooq.exception.CategoryNotFoundException;
 import com.github.davitavora.jooq.repository.CategoryRepository;
-import io.vobiscum.jooqpoc.domain.enums.CategoryType;
-import io.vobiscum.jooqpoc.domain.tables.records.CategoryRecord;
+import com.github.jooq.domain.enums.CategoryType;
+import com.github.jooq.domain.tables.records.CategoryRecord;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

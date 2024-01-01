@@ -7,11 +7,13 @@ import com.github.davitavora.jooq.model.view.Save;
 import com.github.davitavora.jooq.service.CategoryService;
 import com.github.davitavora.patch.web.PatchMediaType;
 import com.github.davitavora.patch.web.Patcher;
-import io.vobiscum.jooqpoc.domain.enums.CategoryType;
+import com.github.jooq.domain.enums.CategoryType;
 import jakarta.json.JsonMergePatch;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Validated
 @Controller
 @ResponseBody
 @RequiredArgsConstructor
@@ -40,7 +43,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public CategoryRepresentation save(@RequestBody @JsonView(Save.class) CategoryRepresentation category) {
+    public CategoryRepresentation save(@RequestBody @JsonView(Save.class) @Valid CategoryRepresentation category) {
         final var record = mapper.asNewRecord(category);
         service.save(record);
         return mapper.asRepresentation(record);
@@ -57,7 +60,7 @@ public class CategoryController {
         final var record = service.findBy(id);
         final var existingCategory = mapper.asRepresentation(record);
         final var patchedCategory = patcher.mergePatch(patch, existingCategory, CategoryRepresentation.class);
-        mapper.update(record, patchedCategory);
+        mapper.updateChangedFields(record, patchedCategory);
         service.update(record);
         return mapper.asRepresentation(record);
     }
