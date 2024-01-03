@@ -2,8 +2,8 @@ package com.github.davitavora.jooq.repository;
 
 import static com.github.davitavora.jooq.util.JooqOperation.conditionIf;
 
-import com.github.jooq.domain.Tables;
-import com.github.jooq.domain.tables.records.FinancialTransactionRecord;
+import com.github.davitavora.jooq.domain.Tables;
+import com.github.davitavora.jooq.domain.tables.records.FinancialTransactionRecord;
 import io.micrometer.common.util.StringUtils;
 import java.time.LocalDate;
 import java.util.List;

@@ -3,9 +3,9 @@ package com.github.davitavora.jooq.repository;
 import static com.github.davitavora.jooq.util.JooqOperation.conditionIf;
 import static org.jooq.impl.DSL.asterisk;
 
-import com.github.jooq.domain.Tables;
-import com.github.jooq.domain.enums.CategoryType;
-import com.github.jooq.domain.tables.records.CategoryRecord;
+import com.github.davitavora.jooq.domain.Tables;
+import com.github.davitavora.jooq.domain.enums.CategoryType;
+import com.github.davitavora.jooq.domain.tables.records.CategoryRecord;
 import io.micrometer.common.util.StringUtils;
 import java.util.List;
 import java.util.Objects;

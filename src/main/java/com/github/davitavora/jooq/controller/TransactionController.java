@@ -1,6 +1,7 @@
 package com.github.davitavora.jooq.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.github.davitavora.jooq.controller.assembler.TransactionAssembler;
 import com.github.davitavora.jooq.mapper.TransactionMapper;
 import com.github.davitavora.jooq.model.representation.TransactionRepresentation;
 import com.github.davitavora.jooq.model.view.Save;
@@ -10,9 +11,9 @@ import com.github.davitavora.patch.web.Patcher;
 import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +23,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Validated
-@Controller
-@ResponseBody
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("transactions")
 public class TransactionController {
@@ -34,30 +34,31 @@ public class TransactionController {
     private final Patcher patcher;
     private final TransactionMapper mapper;
     private final TransactionService service;
+    private final TransactionAssembler assembler;
 
     @GetMapping
-    public List<TransactionRepresentation> search(@RequestParam(required = false) String name,
-                                                  @RequestParam(required = false) Integer categoryId,
-                                                  @RequestParam(required = false) LocalDate createdAt) {
-        final var projections = service.search(name, categoryId, createdAt);
-        return mapper.asRepresentation(projections);
+    public CollectionModel<EntityModel<TransactionRepresentation>> search(@RequestParam(required = false) String name,
+                                                                          @RequestParam(required = false) Integer categoryId,
+                                                                          @RequestParam(required = false) LocalDate createdAt) {
+        final var records = service.search(name, categoryId, createdAt);
+        return assembler.toCollectionModel(records);
     }
 
     @PostMapping
-    public TransactionRepresentation save(@RequestBody @JsonView(Save.class) @Valid TransactionRepresentation transaction) {
+    public EntityModel<TransactionRepresentation> save(@RequestBody @JsonView(Save.class) @Valid TransactionRepresentation transaction) {
         final var record = mapper.asNewRecord(transaction);
         service.save(record);
-        return mapper.asRepresentation(record);
+        return assembler.toModel(record);
     }
 
     @GetMapping("{id}")
-    public TransactionRepresentation findBy(@PathVariable Long id) {
-        final var projection = service.findBy(id);
-        return mapper.asRepresentation(projection);
+    public EntityModel<TransactionRepresentation> findBy(@PathVariable Long id) {
+        final var record = service.findBy(id);
+        return assembler.toModel(record);
     }
 
     @PatchMapping(value = "{id}", consumes = PatchMediaType.APPLICATION_MERGE_PATCH_VALUE)
-    public TransactionRepresentation patch(
+    public EntityModel<TransactionRepresentation> patch(
         @PathVariable Long id,
         @RequestBody JsonMergePatch patch
     ) {
@@ -66,7 +67,7 @@ public class TransactionController {
         final var patchedTransaction = patcher.mergePatch(patch, existingTransaction, TransactionRepresentation.class);
         mapper.updateChangedFields(record, patchedTransaction);
         service.update(record);
-        return mapper.asRepresentation(record);
+        return assembler.toModel(record);
     }
 
     @DeleteMapping("{id}")

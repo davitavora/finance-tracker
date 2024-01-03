@@ -1,8 +1,8 @@
 package com.github.davitavora.jooq.mapper;
 
+import com.github.davitavora.jooq.domain.Tables;
+import com.github.davitavora.jooq.domain.tables.records.CategoryRecord;
 import com.github.davitavora.jooq.model.representation.CategoryRepresentation;
-import com.github.jooq.domain.Tables;
-import com.github.jooq.domain.tables.records.CategoryRecord;
 import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;

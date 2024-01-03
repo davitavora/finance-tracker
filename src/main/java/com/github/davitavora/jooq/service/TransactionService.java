@@ -1,8 +1,8 @@
 package com.github.davitavora.jooq.service;
 
+import com.github.davitavora.jooq.domain.tables.records.FinancialTransactionRecord;
 import com.github.davitavora.jooq.exception.TransactionNotFoundException;
 import com.github.davitavora.jooq.repository.TransactionRepository;
-import com.github.jooq.domain.tables.records.FinancialTransactionRecord;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
