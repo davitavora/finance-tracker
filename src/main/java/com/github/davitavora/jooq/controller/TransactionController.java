@@ -1,13 +1,17 @@
 package com.github.davitavora.jooq.controller;
 
+import static com.github.davitavora.patch.web.PatchMediaType.APPLICATION_MERGE_PATCH_VALUE;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.davitavora.jooq.controller.assembler.TransactionAssembler;
 import com.github.davitavora.jooq.mapper.TransactionMapper;
 import com.github.davitavora.jooq.model.representation.TransactionRepresentation;
 import com.github.davitavora.jooq.model.view.Save;
 import com.github.davitavora.jooq.service.TransactionService;
-import com.github.davitavora.patch.web.PatchMediaType;
 import com.github.davitavora.patch.web.Patcher;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -27,8 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
+@Tag(name = "Transactions")
 @RequiredArgsConstructor
-@RequestMapping("transactions")
+@RequestMapping(
+    value = "transactions",
+    consumes = APPLICATION_JSON_VALUE,
+    produces = HAL_JSON_VALUE
+)
 public class TransactionController {
 
     private final Patcher patcher;
@@ -57,7 +66,7 @@ public class TransactionController {
         return assembler.toModel(record);
     }
 
-    @PatchMapping(value = "{id}", consumes = PatchMediaType.APPLICATION_MERGE_PATCH_VALUE)
+    @PatchMapping(value = "{id}", consumes = APPLICATION_MERGE_PATCH_VALUE)
     public EntityModel<TransactionRepresentation> patch(
         @PathVariable Long id,
         @RequestBody JsonMergePatch patch

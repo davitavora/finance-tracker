@@ -1,5 +1,9 @@
 package com.github.davitavora.jooq.controller;
 
+import static com.github.davitavora.patch.web.PatchMediaType.APPLICATION_MERGE_PATCH_VALUE;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.davitavora.jooq.controller.assembler.CategoryAssembler;
 import com.github.davitavora.jooq.domain.enums.CategoryType;
@@ -7,8 +11,8 @@ import com.github.davitavora.jooq.mapper.CategoryMapper;
 import com.github.davitavora.jooq.model.representation.CategoryRepresentation;
 import com.github.davitavora.jooq.model.view.Save;
 import com.github.davitavora.jooq.service.CategoryService;
-import com.github.davitavora.patch.web.PatchMediaType;
 import com.github.davitavora.patch.web.Patcher;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.json.JsonMergePatch;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +31,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
+@Tag(name = "Categories")
 @RequiredArgsConstructor
-@RequestMapping("categories")
+@RequestMapping(
+    value = "categories",
+    consumes = APPLICATION_JSON_VALUE,
+    produces = HAL_JSON_VALUE
+)
 public class CategoryController {
 
     private final Patcher patcher;
@@ -38,7 +47,7 @@ public class CategoryController {
 
     @GetMapping
     public CollectionModel<EntityModel<CategoryRepresentation>> search(@RequestParam(required = false) String name,
-                                                                       @RequestParam(required = false) CategoryType type) {
+                                                                @RequestParam(required = false) CategoryType type) {
         final var records = service.search(name, type);
         return assembler.toCollectionModel(records);
     }
@@ -56,7 +65,7 @@ public class CategoryController {
         return assembler.toModel(record);
     }
 
-    @PatchMapping(value = "{id}", consumes = PatchMediaType.APPLICATION_MERGE_PATCH_VALUE)
+    @PatchMapping(value = "{id}", consumes = APPLICATION_MERGE_PATCH_VALUE)
     public EntityModel<CategoryRepresentation> patch(@PathVariable Integer id, @RequestBody JsonMergePatch patch) {
         final var record = service.findBy(id);
         final var existingCategory = mapper.asRepresentation(record);
